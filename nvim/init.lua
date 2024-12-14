@@ -1,106 +1,59 @@
-require 'config.options'
-require 'config.keymaps'
-require 'config.autocmds'
+require("lazy.lazy")
+require('config.formating')
 
-vim.o.termguicolors = true
--- set termguicolors = true
+-- KEYMAPS
+vim.keymap.set("n", "<leader><leader>m", "<cmd>put =execute('messages')<CR>", { desc = "Print [M]essages" })
+vim.keymap.set("n", "<leader><leader>s", "<cmd>source %<CR>", { desc = "[S]ource File" })
+vim.keymap.set("n", "<leader>x", ":.lua<CR>", { desc = "E[x]ecute Lua" })
+vim.keymap.set("v", "<leader>x", ":lua<CR>", { desc = "E[x]ecute Lua" })
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- vim.env.PATH = vim.env.PATH .. '/Users/aoi/.nvm/versions/node/v20.13.1/bin/npm'
+-- buffer movement
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-local opts = {
-  ui = {
-    border = 'rounded', -- You can use 'single', 'double', 'rounded', 'solid', 'shadow', etc.
-    backdrop = 10,
-  },
-}
+-- mini.files
+vim.keymap.set('n', '\\', function() require('mini.files').open() end, { desc = 'Open mini.files' })
 
-local plugins = {
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --  This is equivalent to:
-  --    require('Comment').setup({})
+-- mini.notify
+vim.keymap.set('n', '<leader>nh', function()
+  MiniNotify.show_history()
+end, { desc = 'Show MiniNotify history' })
 
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
-  -- { 'xiyaowong/nvim-transparent' },
-
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
-
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    opts = {
-      notify_on_error = true,
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_fallback = true,
-      },
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        javascript = { { 'prettierd', 'prettier' } },
-        c_sharp = { 'csharpier' },
-      },
-    },
-  },
-
-  -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-
-  { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]parenthen
-      --  - yinq - [Y]ank [I]nside [N]ext [']quote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+-- highlight yank
+vim.api.nvim_create_autocmd('TextYankPost', {
+    desc = 'Highlight when yanking',
+    group = vim.api.nvim_create_augroup('highlight-yank', { clear = true }),
+    callback = function()
+        vim.highlight.on_yank()
     end,
-  },
+})
 
-  {
-    { import = 'plugins.chatgippity' },
-    { import = 'plugins.cmp' },
-    { import = 'plugins.color-scheme' },
-    { import = 'plugins.dap' },
-    { import = 'plugins.fugitive' },
-    { import = 'plugins.harpoon' },
-    { import = 'plugins.indent-line' },
-    { import = 'plugins.lazygit' },
-    { import = 'plugins.lsp' },
-    { import = 'plugins.lua-line' },
-    { import = 'plugins.neo-test' },
-    { import = 'plugins.neo-tree' },
-    { import = 'plugins.neogit' },
-    -- { import = 'plugins.octo' },
-    -- { import = 'plugins.oil' },
-    { import = 'plugins.telescope' },
-    { import = 'plugins.toggleterm' },
-    { import = 'plugins.transparent' },
-    { import = 'plugins.tree-sitter' },
-    { import = 'plugins.ufo' },
-    { import = 'plugins.which-key' },
-  },
-}
+-- OPTIONS
+vim.opt.wrap = false
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.shiftwidth = 4
+vim.opt.termguicolors = true
+vim.opt.cursorline = true
+vim.opt.scrolloff = 8
+vim.opt.inccommand = 'split'
+vim.opt.signcolumn = 'yes'
+vim.opt.timeoutlen = 300
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.clipboard = 'unnamedplus'
 
-require('lazy').setup(plugins, opts)
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
+
+-- Sets how neovim will display certain whitespace characters in the editor.
+vim.opt.list = true
+vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
+require("which-key").register({
+  s = { name = "[S]earch" },
+}, { prefix = "<leader>" })
