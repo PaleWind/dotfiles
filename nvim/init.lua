@@ -33,6 +33,6 @@ vim.opt.clipboard = 'unnamedplus'
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
-require("which-key").register({
+require("which-key").add({
   s = { name = "[S]earch" },
 }, { prefix = "<leader>" })

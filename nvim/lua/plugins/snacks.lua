@@ -11,5 +11,6 @@ return {
     statuscolumn = { enabled = true },
     input = { enabled = true },
     lazygit = { enabled = true },
+    terminal = { enabled = true },
   },
 }
