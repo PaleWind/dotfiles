@@ -47,13 +47,9 @@ vim.keymap.set("n", "<C-t>", function()
     require("snacks").terminal.toggle("zsh")
 end, { desc = "Toggle snacks terminal" })
 
--- vim.keymap.set('n', '<C-t>', function()
---     vim.cmd.vnew()
---     vim.cmd.term()
---     vim.cmd.wincmd('J')
---     vim.api.nvim_win_set_height(0, 15)
--- end, { desc = 'Create a new terminal window' })
-
+-- codecompanion
+vim.keymap.set('n', '<C-c>', '<cmd>CodeCompanionChat Toggle<CR>')
+vim.keymap.set('n', '<C-x>', ':CodeCompanion')
 
 -- util
 -- populate quickfix with diagnostics
